@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+{% load static %}
+{% load food_hub_templatetags %}
+<html lang="en">
+	{% load pwa %}
+	{% progressive_web_app_meta %}
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Food Hub</title>
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+
+	<!-- custom css file link -->
+	<link rel="stylesheet" href="{%static 'css/style.css' %}">
+
+</head>
+<body>
+
+<!-- header section start -->
+
+<header class="header">
+	
+	<section class="flex">
+		
+		<a href="home.html" class="logo">Food HUB 😋</a>
+
+		<nav class="navbar">
+			<a href="home.html">Home</a>
+			<a href="about.html">About</a>
+			<a href="menu.html">Menu</a>
+			<a href="orders.html">Orders</a>
+			<a href="contact.html">Contact</a>
+		</nav>
+
+		<div class="icons">
+			<a href="search.html"><i class="fas fa-search"></i></a>
+			<a href="cart.html">
+				<i class="fas fa-shopping-cart"></i>
+				{% if user.is_authenticated %}
+				{% count_pending_orders user.customer as pending_orders %}
+				{% if not pending_orders == 0 %}
+				<span>({{pending_orders}})</span>
+				{% endif %}
+				{% endif %}
+			</a>
+			<div id="user-btn" class="fas fa-user"></div>
+			<div id="menu-btn" class="fas fa-bars"></div>
+		</div>
+
+		<div class="profile">
+			{% if user.is_authenticated %}
+			<p class="name">Hello! {{user.username|title}} </p>
+			<div class="flex">
+				<a href="profile.html" class="btn">Profile</a>
+				<a href="{% url 'user_logout'%}" class="delete-btn">Logout</a>
+			</div>
+			{% elif user.is_superuser %}
+			<div class="flex">
+				<a href="profile.html" class="btn">Profile</a>
+				<a href="{% url 'user_logout'%}" class="delete-btn">Logout</a>
+			</div>
+			{% else %}
+			<p class="account"><a href="login.html">Login</a> or <a href="register.html">Register</a></p>
+		</div>
+			{% endif %}
+	</section>
+
+</header>
+
+<!-- header section end -->
+
+<!-- hero section start -->
+
+<section class="hero">
+
+	{% for message in messages %}
+		<h4> {{message}} </h4>
+	{% endfor %}
+	
+	<div class="swiper hero-slider">
+		
+		<div class="swiper-wrapper">
+
+
+			<div class="swiper-slide slide">
+				<div class="content">
+					{% if user.is_superuser %}
+					<h3>Admin</h3>
+					<a href="dashboard.html" class="btn">Dashboard</a>
+					{% elif user.customer %}
+					<h3>Order Now</h3>
+					<a href="menu.html" class="btn">Menu</a>
+					{% else %}
+					<span>Welcome to Food HUB</span>
+					<h3>Order Now</h3>
+					<a href="login.html" class="btn">Login</a>
+					<span> or </span>
+					<a href="register.html" class="btn">Register</a>
+					{% endif %}
+
+				</div>
+				<div class="image">
+					<img src="{%static 'images/Foodhub.png' %}">
+				</div>
+			</div>
+			
+			<div class="swiper-slide slide">
+				<div class="content">
+					<span>Free Delivery!</span>
+					<h3>Order Meaty Shawarma Now!</h3>
+					<a href="menu.html" class="btn">See Menus</a>
+				</div>
+				<div class="image">
+					<img src="{%static 'images/home-img-1.png' %}">
+				</div>
+			</div>
+
+			<div class="swiper-slide slide">
+				<div class="content">
+					<span>No Time to go Out?</span>
+					<h3>Order Online</h3>
+					<a href="menu.html" class="btn">See Menus</a>
+				</div>
+				<div class="image">
+					<img src="{%static 'images/home-img-2.png' %}">
+				</div>
+			</div>
+
+			<div class="swiper-slide slide">
+				<div class="content">
+					<span>Order Now!</span>
+					<h3>Delicious Milktea</h3>
+					<a href="menu.html" class="btn">See Menus</a>
+				</div>
+				<div class="image">
+					<img src="{%static 'images/home-img-3.png' %}">
+				</div>
+			</div>
+
+		</div>
+
+		<div class="swiper-pagination"></div>
+
+	</div>
+
+</section>
+
+<!-- hero section end -->
+
+<!-- category section start -->
+
+<section class="category">
+	
+	<h1 class="title">List of Stores</h1>
+
+	<div class="box-container">
+		
+		{% for superuser in superusers %}
+			{% if superuser.customer.stall_name %}
+			<a href="menu-{{superuser.customer.stall_name}}.html" class="box">
+				<img src="{%static 'images/cat-1.png' %}">
+				<h3>{{superuser.customer.stall_name}}</h3>
+			</a>
+			{% endif %}
+		{% endfor %}
+	</div>
+
+</section>
+
+<!-- category section end -->
+
+<!-- home product section start -->
+
+<section class="products">
+	
+	<h1 class="title">Best Selling Today</h1>
+
+	<div class="box-container">
+
+		{% for product in all_products %}
+		<form method="post" class="box">
+			<button type="button" class="fas fa-shopping-cart" name="add-to-cart" onclick="location.href='menu-{{product.stall_owner.customer.stall_name}}.html#{{product.product_name}}'"></button>
+			<img src="{{product.product_image.url}}">
+			<a href="menu-{{product.stall_owner.customer.stall_name}}.html" class="cat">{{product.stall_owner.customer.stall_name}}</a>
+			<div class="name">{{product.product_name}}</div>
+			<!--<div class="flex">
+				<div class="price"><span>₱</span>{{product.product_price}}</div>
+				<input type="number" name="qty" class="qty" min="1" max="99" value="1" onkeypress="if(this.value.length == 2) return false;">
+			</div> -->
+		</form>
+		{% endfor %}
+
+	</div>
+
+	<div class="more-btn">
+		<a href="menu.html" class="btn">View All</a>
+	</div>
+
+</section>
+
+<!-- home product section end -->
+
+<!-- footer section start -->
+
+<footer class="footer">
+	
+	<section class="grid">
+		
+		<div class="box">
+			<img src="{%static 'images/email-icon.png' %}">
+			<h3>Email</h3>
+			<a href="mailto:ragitjoshua026@gmail.com">ragitjoshua026@gmail.com</a>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/clock-icon.png' %}">
+			<h3>Opening/Closing Hour</h3>
+			<p>07:00am to 05:00pm</p>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/map-icon.png' %}">
+			<h3>Address</h3>
+			<a href="#">Irene St. Miramonte Subd. Lucban, Quezon</a>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/phone-icon.png' %}">
+			<h3>Phone Number</h3>
+			<a href="tel:5401234">540-1234</a>
+		</div>
+
+	</section>
+
+	<div class="credit">
+		All Rights Reserved 2022 <span>Foodhub ©</span>
+	</div>
+
+</footer>
+
+<!-- footer section end -->
+
+
+<div class="loader">
+	<img src="{%static 'images/loader.gif' %}">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+
+<!-- custom js file link -->
+<script src="{%static 'js/script.js' %}"></script>
+
+<script>
+var swiper = new Swiper(".hero-slider", {
+	loop: true,
+	grabCursor: true,
+	effect: "flip",
+	pagination: {
+		el:".swiper-pagination",
+		clickable: true,
+	},
+});	
+</script>
+
+</body>
+</html>

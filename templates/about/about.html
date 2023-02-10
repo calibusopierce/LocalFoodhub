@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+{%load static%}
+{% load food_hub_templatetags %}
+<html lang="en">
+	{% load pwa %}
+	{% progressive_web_app_meta %}
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>About</title>
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+
+	<!-- custom css file link -->
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+
+<!-- header section start -->
+
+<header class="header">
+	
+	<section class="flex">
+		
+		<a href="home.html" class="logo">Food HUB 😋</a>
+
+		<nav class="navbar">
+			<a href="home.html">Home</a>
+			<a href="about.html">About</a>
+			<a href="menu.html">Menu</a>
+			<a href="orders.html">Orders</a>
+			<a href="contact.html">Contact</a>
+		</nav>
+
+		<div class="icons">
+			<a href="search.html"><i class="fas fa-search"></i></a>
+			<a href="cart.html">
+				<i class="fas fa-shopping-cart"></i>
+				{% if user.is_authenticated %}
+				{% count_pending_orders user.customer as pending_orders %}
+				{% if not pending_orders == 0 %}
+				<span>({{pending_orders}})</span>
+				{% endif %}
+				{% endif %}
+			</a>
+			<div id="user-btn" class="fas fa-user"></div>
+			<div id="menu-btn" class="fas fa-bars"></div>
+		</div>
+
+		<div class="profile">
+			{% if user.is_authenticated %}
+			<p class="name">Hello! {{user.customer.fname|title}}</p>
+			<div class="flex">
+				<a href="profile.html" class="btn">Profile</a>
+				<a href="{% url 'user_logout'%}" class="delete-btn">Logout</a>
+			</div>
+			{% elif user.is_superuser %}
+			<div class="flex">
+				<a href="profile.html" class="btn">Profile</a>
+				<a href="{% url 'user_logout'%}" class="delete-btn">Logout</a>
+			</div>
+			{% else %}
+			<p class="account"><a href="login.html">Login</a> or <a href="register.html">Register</a></p>
+		</div>
+			{% endif %}
+
+	</section>
+
+</header>
+
+<!-- header section end -->
+
+<div class="heading">
+	<h3>About Store's</h3>
+	<p><a href="home.html">Home</a><span> / About</span></p>
+</div>
+
+<!-- about section start -->
+
+<section class="about">
+	
+	<div class="row">
+		
+		<div class="image">
+			<img src="{% static 'images/about-img.svg' %}">
+		</div>
+
+		<div class="content">
+			<h3>Choose your item in different store here in our website!</h3>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+			<a href="menu.html" class="btn">Our Menu</a>
+		</div>
+
+	</div>
+
+</section>
+
+<!-- about section end -->
+
+<!-- step section start -->
+
+<section class="steps">
+	
+	<h1 class="title">Simple Steps</h1>
+
+	<div class="box-container">
+		
+		<div class="box">
+			<img src="{% static 'images/step-1.png' %}">
+			<h3>Select Order</h3>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+		</div>
+
+		<div class="box">
+			<img src="{% static 'images/step-2.png' %}">
+			<h3>Efficient Delivery</h3>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+		</div>
+
+		<div class="box">
+			<img src="{% static 'images/step-3.png' %}">
+			<h3>Enjoy Food</h3>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+		</div>
+
+	</div>
+
+</section>
+
+<!-- step section end -->
+
+<!-- review section start -->
+
+<section class="reviews">
+	
+	<h1 class="title">Customer's Reviews</h1>
+
+	<div class="swiper reviews-slider">
+		
+		<div class="swiper-wrapper">
+			
+			<div class="swiper-slide slide">
+				<img src="{% static 'images/pic-1.png' %}">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<div class="stars">
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star-half-alt"></i>
+				</div>
+				<h3>Franco Hook</h3>
+			</div>
+
+			<div class="swiper-slide slide">
+				<img src="{% static 'images/pic-2.png'%}">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<div class="stars">
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star-half-alt"></i>
+				</div>
+				<h3>Invisible Miya</h3>
+			</div>
+
+			<div class="swiper-slide slide">
+				<img src="{% static 'images/pic-3.png'%}">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<div class="stars">
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star-half-alt"></i>
+				</div>
+				<h3>Lance Main</h3>
+			</div>
+
+			<div class="swiper-slide slide">
+				<img src="{% static 'images/pic-4.png'%}">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<div class="stars">
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star-half-alt"></i>
+				</div>
+				<h3>Flying Kimmy</h3>
+			</div>
+
+			<div class="swiper-slide slide">
+				<img src="{% static 'images/pic-5.png'%}">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<div class="stars">
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star-half-alt"></i>
+				</div>
+				<h3>Aldog ng Bayan</h3>
+			</div>
+
+			<div class="swiper-slide slide">
+				<img src="{% static 'images/pic-6.png'%}">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				<div class="stars">
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star"></i>
+					<i class="fas fa-star-half-alt"></i>
+				</div>
+				<h3>Odette User</h3>
+			</div>
+
+		</div>
+
+		<div class="swiper-pagination"></div>
+
+	</div>
+
+</section>
+
+<!-- review section end -->
+
+<!-- footer section start -->
+
+<footer class="footer">
+	
+	<section class="grid">
+		
+		<div class="box">
+			<img src="{% static 'images/email-icon.png'%}">
+			<h3>Email</h3>
+			<a href="mailto:ragitjoshua026@gmail.com">ragitjoshua026@gmail.com</a>
+		</div>
+
+		<div class="box">
+			<img src="{% static 'images/clock-icon.png'%}">
+			<h3>Opening/Closing Hour</h3>
+			<p>07:00am to 05:00pm</p>
+		</div>
+
+		<div class="box">
+			<img src="{% static 'images/map-icon.png'%}">
+			<h3>Address</h3>
+			<a href="#">Irene St. Miramonte Subd. Lucban, Quezon</a>
+		</div>
+
+		<div class="box">
+			<img src="{% static 'images/phone-icon.png'%}">
+			<h3>Phone Number</h3>
+			<a href="tel:5401234">540-1234</a>
+
+		</div>
+
+	</section>
+
+	<div class="credit">
+		All Rights Reserved 2022 <span>Foodhub ©</span>
+	</div>
+
+</footer>
+
+<!-- footer section end -->
+
+<div class="loader">
+	<img src="{% static 'images/loader.gif'%}">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+
+<!-- custom js file link -->
+<script src="{% static 'js/script.js'%}"></script>
+
+<script>
+var swiper = new Swiper(".reviews-slider", {
+	loop: true,
+	grabCursor: true,
+	spaceBetween: 20,
+	pagination: {
+		el:".swiper-pagination",
+		clickable: true,
+	},
+	breakpoints: {
+		0: {
+			slidesPerView: 1,			
+		},
+		700: {
+			slidesPerView: 2,
+		},
+		1024: {
+			slidesPerView: 3,
+		},
+	},
+});	
+</script>
+
+</body>
+</html>

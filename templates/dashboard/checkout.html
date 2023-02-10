@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+{%load static %}
+{% load food_hub_templatetags %}
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Checkout</title>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+
+	<!-- custom css file link -->
+	<link rel="stylesheet" href="{%static 'css/style.css'%}">
+
+</head>
+<body>
+
+<!-- header section start -->
+
+<header class="header">
+	
+	<section class="flex">
+		
+		<a href="home.html" class="logo">Food HUB 😋</a>
+
+		<nav class="navbar">
+			<a href="home.html">Home</a>
+			<a href="about.html">About</a>
+			<a href="menu.html">Menu</a>
+			<a href="orders.html">Orders</a>
+			<a href="contact.html">Contact</a>
+		</nav>
+
+		<div class="icons">
+			<a href="search.html"><i class="fas fa-search"></i></a>
+			<a href="cart.html">
+				<i class="fas fa-shopping-cart"></i>
+				{% if user.is_authenticated %}
+				{% count_pending_orders user.customer as pending_orders %}
+				{% if not pending_orders == 0 %}
+				<span>({{pending_orders}})</span>
+				{% endif %}
+				{% endif %}
+			</a>
+			<div id="user-btn" class="fas fa-user"></div>
+			<div id="menu-btn" class="fas fa-bars"></div>
+		</div>
+
+		<div class="profile">
+			{% if user.is_authenticated %}
+			<p class="name">Hello! {{user.customer.fname|title}}</p>
+			<div class="flex">
+				<a href="profile.html" class="btn">Profile</a>
+				<a href="{% url 'user_logout'%}" class="delete-btn">Logout</a>
+			</div>
+			{% elif user.is_superuser %}
+			<div class="flex">
+				<a href="profile.html" class="btn">Profile</a>
+				<a href="{% url 'user_logout'%}" class="delete-btn">Logout</a>
+			</div>
+			{% else %}
+			<p class="account"><a href="login.html">Login</a> or <a href="register.html">Register</a></p>
+		</div>
+			{% endif %}
+
+	</section>
+
+</header>
+
+<!-- header section end -->
+
+<div class="heading">
+	<h3>Checkout</h3>
+	<p><a href="home.html">Home</a><span> / Checkout</span></p>
+</div>
+
+<!-- checkout section start -->
+
+<section class="checkout">
+	
+	<h1 class="title">Order Summary</h1>
+	{% for message in messages %}
+	<h4>{{message}}</h4>
+	{% endfor %}
+
+	<form method="post">
+		{% csrf_token %}
+
+		<div class="cart-items">
+			<h3>Cart Items</h3>
+			{% for my_cart in my_cart %}
+			<p><span class="name">{{my_cart.product.product_name}}: </span>
+				{% subTotalCalculator my_cart.product.product_price my_cart.quantity as sub_total %}
+				<span class="price">{{my_cart.quantity}} x ₱{{my_cart.product.product_price}} = ₱{{sub_total}}</span>
+				<input type="hidden" name="product_ids" value="{{my_cart.cart_id}}">
+			</p>
+			{% endfor %}
+
+			{% cartTotal my_cart as cart_total %}
+			<p class="grand-total"><span class="name">Grand Total: </span><span class="price">₱{{cart_total}}</span></p>
+			<p class="estimated-time"><span class="name">Estimated Time: </span><span class="price">10 Minutes</span></p>
+			<a href="cart.html" class="btn">View Cart</a>
+		</div>
+
+		<div class="user-info">
+			<h3>Your Info</h3>
+			<p><i class="fas fa-user"></i><span>{{user.customer.fname}} {{user.customer.lname}}</span></p>
+			<p><i class="fas fa-phone"></i><span>{{user.customer.phone_number}}</span></p>
+			<p><i class="fas fa-envelope"></i><span>{{user.customer.email}}</span></p>
+			<a href="update_profile.html" class="btn">Update Info</a>
+			<h3>Delivery Address</h3>
+			<p><i class="fas fa-map-marker-alt"></i><span>{{user.customer.brgy}}</span></p>
+			<a href="update_address.html" class="btn">Update Address</a>
+			<select name="method" class="box" required>
+				<option disabled selected>-- Select Payment Method --</option>
+				<option value="cash on delivery">Cash on Delivery</option>
+				<option value="gcash">Gcash</option>
+			</select>
+			<input type="submit" value="Place Order" class="btn" style="width: 100%; background-color: var(--red); color: var(--white);">
+		</div>
+
+	</form>
+
+</section>
+
+<!-- checkout section end -->
+
+<!-- footer section start -->
+
+<footer class="footer">
+	
+	<section class="grid">
+		
+		<div class="box">
+			<img src="{%static 'images/email-icon.png'%}">
+			<h3>Email</h3>
+			<a href="mailto:ragitjoshua026@gmail.com">ragitjoshua026@gmail.com</a>
+			<a href="mailto:calibusopierce@gmail.com">calibusopierce@gmail.com</a>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/clock-icon.png'%}">
+			<h3>Opening/Closing Hour</h3>
+			<p>07:00am to 05:00pm</p>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/map-icon.png'%}">
+			<h3>Address</h3>
+			<a href="#">Irene St. Miramonte Subd. Lucban, Quezon</a>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/phone-icon.png'%}">
+			<h3>Phone Number</h3>
+			<a href="tel:5401234">540-1234</a>
+			<a href="tel:5402134">540-2134</a>
+			<a href="tel:5403214">540-3214</a>
+		</div>
+
+	</section>
+
+	<div class="credit">
+		All Rights Reserved 2022 <span>©</span>
+	</div>
+
+</footer>
+
+<!-- footer section end -->
+
+<div class="loader">
+	<img src="{%static 'images/loader.gif'%}">
+</div>
+
+<!-- custom js file link -->
+<script src="{%static 'js/script.js'%}"></script>
+
+</body>
+</html>

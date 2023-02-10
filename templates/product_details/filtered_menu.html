@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+{%load static %}
+{% load food_hub_templatetags %}
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{stall_name}}</title>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+
+	<!-- custom css file link -->
+	<link rel="stylesheet" href="{%static 'css/style.css'%}">
+
+</head>
+<body>
+
+<!-- header section start -->
+
+<header class="header">
+	
+	<section class="flex">
+		
+		<a href="home.html" class="logo">Food HUB 😋</a>
+
+		<nav class="navbar">
+			<a href="home.html">Home</a>
+			<a href="about.html">About</a>
+			<a href="menu.html">Menu</a>
+			<a href="orders.html">Orders</a>
+			<a href="contact.html">Contact</a>
+		</nav>
+
+		<div class="icons">
+			<a href="search.html"><i class="fas fa-search"></i></a>
+			<a href="cart.html">
+				<i class="fas fa-shopping-cart"></i>
+				{% if user.is_authenticated %}
+				{% count_pending_orders user.customer as pending_orders %}
+				{% if not pending_orders == 0 %}
+				<span>({{pending_orders}})</span>
+				{% endif %}
+				{% endif %}
+			</a>
+			<div id="user-btn" class="fas fa-user"></div>
+			<div id="menu-btn" class="fas fa-bars"></div>
+		</div>
+
+		<div class="profile">
+			{% if user.is_authenticated %}
+			<p class="name">Hello! {{user.customer.fname|title}}</p>
+			<div class="flex">
+				<a href="profile.html" class="btn">Profile</a>
+				<a href="{% url 'user_logout'%}" class="delete-btn">Logout</a>
+			</div>
+			{% elif user.is_superuser %}
+			<div class="flex">
+				<a href="profile.html" class="btn">Profile</a>
+				<a href="{% url 'user_logout'%}" class="delete-btn">Logout</a>
+			</div>
+			{% else %}
+			<p class="account"><a href="login.html">Login</a> or <a href="register.html">Register</a></p>
+		</div>
+			{% endif %}
+
+	</section>
+
+</header>
+
+<!-- header section end -->
+
+<div class="heading">
+	<h3>{{stall_name}}</h3>
+	<p><a href="home.html">Home</a><span> / Menu</span></p>
+</div>
+
+<!-- menu section start -->
+
+<section class="products">
+
+	<h1 class="title">Menu</h1>
+	{% for message in messages %}
+		<h4 style='text-align: center;'>{{message}}</h4> <br>
+	{% endfor %}
+
+	<div class="box-container">
+		{% for product in product_list %}
+		<form method="post" class="box" id='{{product.product_name}}'>
+			{% csrf_token %}
+			<button type="submit" class="fas fa-shopping-cart" name="add-to-cart"></button>
+			<img src="{{product.product_image.url}}">
+			<a href="#" class="cat">{{stall_name}}</a>
+			<div class="name">{{product.product_name}}</div>
+			<h4>Available stocks : {{product.stocks}}</h4>
+			<div class="flex">
+				<div class="price"><span>₱</span>
+					<input type="hidden" name="product_price" id="price{{forloop.counter}}" value="{{product.product_price}}">
+					<input type="hidden" name="product_name" id="product{{forloop.counter}}" value="{{product.product_name}}">
+					<input type="hidden" name="stall_owner" id="stall_owner" value="{{product.stall_owner}}">
+					<input type="text" id="total{{forloop.counter}}" value="{{product.product_price}}" disabled>
+				</div>
+				<input type="number" name="qty" class="qty" min="1" max="99" value="1" id="qty{{forloop.counter}}" onchange="TotalCalculator({{forloop.counter}});">
+			</div>
+		</form>
+		{% endfor %}
+	</div>
+
+</section>
+
+<!-- menu section end -->
+
+<!-- footer section start -->
+
+<footer class="footer">
+	
+	<section class="grid">
+		
+		<div class="box">
+			<img src="{%static 'images/email-icon.png'%}">
+			<h3>Email</h3>
+			<a href="mailto:ragitjoshua026@gmail.com">ragitjoshua026@gmail.com</a>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/clock-icon.png'%}">
+			<h3>Opening/Closing Hour</h3>
+			<p>07:00am to 05:00pm</p>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/map-icon.png'%}">
+			<h3>Address</h3>
+			<a href="#">Irene St. Miramonte Subd. Lucban, Quezon</a>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/phone-icon.png'%}">
+			<h3>Phone Number</h3>
+			<a href="tel:5401234">540-1234</a>
+		</div>
+
+	</section>
+
+	<div class="credit">
+		All Rights Reserved 2022 <span>Foodhub ©</span>
+	</div>
+
+</footer>
+
+<!-- footer section end -->
+
+
+<!-- custom js file link -->
+<script src="{%static 'js/script.js'%}"></script>
+<script>
+	function TotalCalculator(number){
+		var product_id = document.getElementById('product'+String(number)).value;
+		const price_id = 'price'+product_id;
+		const qty_id = 'qty'+product_id;
+		const total_id = 'total'+product_id;
+
+		var price = parseFloat(document.getElementById(price_id).value);
+		var qty = parseFloat(document.getElementById(qty_id).value);
+		var total = price * qty;
+		document.getElementById(total_id).value = total;
+	}
+</script>
+
+
+</body>
+</html>

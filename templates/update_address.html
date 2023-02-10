@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+{%load static%}
+{% load food_hub_templatetags %}
+<html lang="en">
+	{% load pwa %}
+	{% progressive_web_app_meta %}
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Update Address</title>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+
+	<!-- custom css file link -->
+	<link rel="stylesheet" href="{%static 'css/style.css'%}">
+
+</head>
+<body>
+
+<!-- header section start -->
+
+<header class="header">
+	
+	<section class="flex">
+		
+		<a href="home.html" class="logo">Food HUB 😋</a>
+
+		<nav class="navbar">
+			<a href="home.html">Home</a>
+			<a href="about.html">About</a>
+			<a href="menu.html">Menu</a>
+			<a href="orders.html">Orders</a>
+			<a href="contact.html">Contact</a>
+		</nav>
+
+		<div class="icons">
+			<a href="search.html"><i class="fas fa-search"></i></a>
+			<a href="cart.html">
+				<i class="fas fa-shopping-cart"></i>
+				{% if user.is_authenticated %}
+				{% count_pending_orders user.customer as pending_orders %}
+				{% if not pending_orders == 0 %}
+				<span>({{pending_orders}})</span>
+				{% endif %}
+				{% endif %}
+			</a>
+			<div id="user-btn" class="fas fa-user"></div>
+			<div id="menu-btn" class="fas fa-bars"></div>
+		</div>
+
+		<div class="profile">
+			{% if user.is_authenticated %}
+			<p class="name">Hello! {{user.customer.fname|title}}</p>
+			<div class="flex">
+				<a href="profile.html" class="btn">Profile</a>
+				<a href="{% url 'user_logout'%}" class="delete-btn">Logout</a>
+			</div>
+			{% elif user.is_superuser %}
+			<div class="flex">
+				<a href="profile.html" class="btn">Profile</a>
+				<a href="{% url 'user_logout'%}" class="delete-btn">Logout</a>
+			</div>
+			{% else %}
+			<p class="account"><a href="login.html">Login</a> or <a href="register.html">Register</a></p>
+		</div>
+			{% endif %}
+
+	</section>
+
+</header>
+
+<!-- header section end -->
+
+<!-- update address section start -->
+
+<section class="form-container">
+	{% csrf_token %}
+	<form method="post">
+		<h3>Update Delivery Address Details</h3>
+		<select name="method" class="box" required>
+			<option disabled selected>-- Select Barangay --</option>
+			<option value="Abang">Abang</option>
+			<option value="Aliliw">Aliliw</option>
+			<option value="Atulinao">Atulinao</option>
+			<option value="Ayuti">Ayuti</option>
+			<option value="Barangay 1">Barangay 1 (Pob.)</option>
+			<option value="Barangay 2">Barangay 2 (Pob.)</option>
+			<option value="Barangay 3">Barangay 3 (Pob.)</option>
+			<option value="Barangay 4">Barangay 4 (Pob.)</option>
+			<option value="Barangay 5">Barangay 5 (Pob.)</option>
+			<option value="Barangay 6">Barangay 6 (Pob.)</option>
+			<option value="Barangay 7">Barangay 7 (Pob.)</option>
+			<option value="Barangay 8">Barangay 8 (Pob.)</option>
+			<option value="Barangay 9">Barangay 9 (Pob.)</option>
+			<option value="Barangay 10">Barangay 10 (Pob.)</option>
+			<option value="Igang">Igang</option>
+			<option value="Kabatete">Kabatete</option>
+			<option value="Kakawit">Kakawit</option>
+			<option value="Kalangay">Kalangay</option>
+			<option value="Kalyaat">Kalyaat</option>
+			<option value="Kilib">Kilib</option>
+			<option value="Kulapi">Kulapi</option>
+			<option value="Mahabang Parang">Mahabang Parang</option>
+			<option value="Malupak">Malupak</option>
+			<option value="Manasa">Manasa</option>
+			<option value="May-it">May-it</option>
+			<option value="Nagsinamo">Nagsinamo</option>
+			<option value="Nalunao">Nalunao</option>
+			<option value="Palola">Palola</option>
+			<option value="Piis">Piis</option>
+			<option value="Samil">Samil</option>
+			<option value="Tiawe">Tiawe</option>
+			<option value="Tinamnan">Tinamnan</option>
+		</select>
+		<input type="text" name="address" required placeholder="Delivery Address" class="box" maxlength="100" value="{{user.customer.delivery_address}}">
+		<input type="text" name="phone_number" required placeholder="Phone Number" class="box" maxlength="100" value="{{user.customer.phone_number}}">
+		<input type="email" name="email" required placeholder="Email Address" class="box" maxlength="100" value="{{user.customer.email}}">
+		<input type="submit" value="Save Address" name="submit" class="btn">
+		{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <h2 class="message {{ message.tags }}">{{ message }}</h2>
+        {% endfor %}
+    </ul>
+{% endif %}
+	</form>
+
+</section>
+
+<!-- update address section end -->
+
+
+<!-- footer section start -->
+
+<footer class="footer">
+	
+	<section class="grid">
+		
+		<div class="box">
+			<img src="{%static 'images/email-icon.png'%}">
+			<h3>Email</h3>
+			<a href="mailto:ragitjoshua026@gmail.com">ragitjoshua026@gmail.com</a>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/clock-icon.png'%}">
+			<h3>Opening/Closing Hour</h3>
+			<p>07:00am to 05:00pm</p>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/map-icon.png'%}">
+			<h3>Address</h3>
+			<a href="#">Irene St. Miramonte Subd. Lucban, Quezon</a>
+		</div>
+
+		<div class="box">
+			<img src="{%static 'images/phone-icon.png'%}">
+			<h3>Phone Number</h3>
+			<a href="tel:5401234">540-1234</a>
+		</div>
+
+	</section>
+
+	<div class="credit">
+		All Rights Reserved 2022 <span>Foodhub ©</span>
+	</div>
+
+</footer>
+
+<!-- footer section end -->
+
+<div class="loader">
+	<img src="{%static 'images/loader.gif'%}">
+</div>
+
+<!-- custom js file link -->
+<script src="{%static 'js/script.js'%}"></script>
+
+</body>
+</html>
